@@ -156,4 +156,23 @@ public class DinnerEventResourceTest {
 
     }
 
+    @Test
+    public void testupdateDinnerEvent(){
+        Gson gson = new Gson().newBuilder().setPrettyPrinting().create();
+        DinnerEventDTO dinnerEventDTO = new DinnerEventDTO("time4","location","dish4",40);
+        String json = gson.toJson(dinnerEventDTO);
+        login("admin", "test");
+        given()
+                .contentType("application/json")
+                .body(json)
+                .header("x-access-token", securityToken)
+                .put("/dinnerevent/update/" + dinnerEvent1.getId()).then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("time", equalTo("time4"))
+                .body("location", equalTo("location"))
+                .body("dish", equalTo("dish4"))
+                .body("pricePrPerson", equalTo(40));
+    }
+
 }

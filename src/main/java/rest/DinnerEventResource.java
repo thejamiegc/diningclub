@@ -72,4 +72,31 @@ public class DinnerEventResource {
         return ;
     }
 
+    @PUT
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Path("update/{id}")
+    @RolesAllowed("admin")
+    public String updateDinnerEvent( @PathParam("id") int id, String jsonString){
+        String thisuser = securityContext.getUserPrincipal().getName();
+        String time = "";
+        String location = "";
+        String dish = "";
+        Integer pricePrPerson = 0;
+        DinnerEventDTO dinnerEventDTO = null;
+        try {
+            JsonObject json = new Gson().fromJson(jsonString, JsonObject.class);
+            time = json.get("time").getAsString();
+            location = json.get("location").getAsString();
+            dish = json.get("dish").getAsString();
+            pricePrPerson = json.get("pricePrPerson").getAsInt();
+            dinnerEventDTO = new DinnerEventDTO(time, location, dish, pricePrPerson);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        dinnerEventDTO.setId((long) id);
+        DinnerEventDTO returnDTO = FACADE.updateDinnerEvent(dinnerEventDTO);
+        return GSON.toJson(returnDTO);
+    }
+
 }
