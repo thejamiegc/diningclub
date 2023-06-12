@@ -74,6 +74,7 @@ public class MemberResourceTest {
             em.getTransaction().begin();
             em.createNamedQuery("dinner_event.deleteAllRows").executeUpdate();
             em.createNamedQuery("assignment.deleteAllRows").executeUpdate();
+            em.createNamedQuery("member.deleteAllRows").executeUpdate();
             em.createNamedQuery("roles.deleteAllRows").executeUpdate();
             em.persist(assignment1);
             em.persist(member1);
