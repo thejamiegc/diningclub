@@ -3,6 +3,7 @@ package facades;
 import dtos.MemberDTO;
 import entities.Assignment;
 import entities.Member;
+import entities.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -46,4 +47,16 @@ public class MemberFacade {
 
         return new MemberDTO(member);
     }
+
+    public MemberDTO getMemberByUser(String username) {
+        EntityManager entityManager = emf.createEntityManager();
+        User user = entityManager.find(User.class, username);
+
+        if(user.getMember() == null) {
+            return null;
+        }
+        return new MemberDTO(user.getMember());
+    }
+
+
 }

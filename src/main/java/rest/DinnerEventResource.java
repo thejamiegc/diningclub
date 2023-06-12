@@ -118,4 +118,11 @@ public class DinnerEventResource {
         return GSON.toJson(dinnerEventDTO);
     }
 
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    @Path("member/{email}")
+    public String getDinnerEventByMember(@PathParam("email") String email) {
+        return GSON.toJson(FACADE.getDinnerEventByMember(email));
+    }
+
 }

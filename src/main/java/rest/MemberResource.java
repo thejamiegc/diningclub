@@ -58,4 +58,11 @@ public class MemberResource {
         return GSON.toJson(memberDTO);
     }
 
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    @Path("{username}")
+    public String getMemberByUser(@PathParam("username") String username) {
+        MemberDTO memberDTO = FACADE.getMemberByUser(username);
+        return GSON.toJson(memberDTO);
+    }
 }

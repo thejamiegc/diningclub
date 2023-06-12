@@ -32,6 +32,7 @@ public class MemberResourceTest {
     private static final String SERVER_URL = "http://localhost/api";
     private Assignment assignment1;
     private Member member1;
+    private User user1;
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
@@ -70,14 +71,18 @@ public class MemberResourceTest {
         EntityManager em = emf.createEntityManager();
         assignment1 = new Assignment("fam","cratedate","email");
         member1 = new Member("email","address",57,24,100);
+        user1 = new User("username","password");
+        user1.setMember(member1);
         try {
             em.getTransaction().begin();
             em.createNamedQuery("dinner_event.deleteAllRows").executeUpdate();
             em.createNamedQuery("assignment.deleteAllRows").executeUpdate();
             em.createNamedQuery("member.deleteAllRows").executeUpdate();
             em.createNamedQuery("roles.deleteAllRows").executeUpdate();
+            em.createNamedQuery("users.deleteAllRows").executeUpdate();
             em.persist(assignment1);
             em.persist(member1);
+            em.persist(user1);
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -110,7 +115,17 @@ public class MemberResourceTest {
                 .body("assignments[0]", equalTo("fam"));
     }
 
-
+    @Test
+    public void testGetMemberByUser(){
+        given()
+                .contentType("application/json")
+                .accept("application/json")
+                .when()
+                .get("/member/"+user1.getUserName())
+                .then()
+                .statusCode(200)
+                .body("email", equalTo("email"));
+    }
 
 
 

@@ -3,6 +3,7 @@ package facades;
 import dtos.DinnerEventDTO;
 import entities.Assignment;
 import entities.DinnerEvent;
+import entities.Member;
 import org.junit.jupiter.api.*;
 import utils.EMF_Creator;
 
@@ -19,6 +20,7 @@ public class DinnerEventFacadeTest {
     private static DinnerEventFacade facade;
     private DinnerEvent dinnerEvent1;
     private Assignment assignment1;
+    Member member1;
 
     public DinnerEventFacadeTest() {
     }
@@ -43,15 +45,21 @@ public class DinnerEventFacadeTest {
         DinnerEvent dinnerEvent2 = new DinnerEvent("time2","location","dish2",20);
         DinnerEvent dinnerEvent3 = new DinnerEvent("time3","location","dish3",30);
         assignment1 = new Assignment("assignment1", "description1", "test1");
+        member1 = new Member("Email","address",213,123,1223);
+        dinnerEvent3.setAssignment(assignment1);
+        member1.addAssignment(assignment1);
         try {
             em.getTransaction().begin();
             em.createNamedQuery("dinner_event.deleteAllRows").executeUpdate();
             em.createNamedQuery("assignment.deleteAllRows").executeUpdate();
+            em.createNamedQuery("member.deleteAllRows").executeUpdate();
+
 
             em.persist(dinnerEvent1);
             em.persist(dinnerEvent2);
             em.persist(dinnerEvent3);
             em.persist(assignment1);
+            em.persist(member1);
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -102,5 +110,12 @@ public class DinnerEventFacadeTest {
          DinnerEventDTO expected = new DinnerEventDTO(dinnerEvent1);
          DinnerEventDTO actual = facade.addAssignmentToDinnerEvent(expected.getId(), assignment1.getFamilyName());
          assertEquals(assignment1.getFamilyName(), actual.getAssignment());
+   }
+
+   @Test
+    public void testGetDinnerEventByMember(){
+       System.out.println("getDinnerEventByMember");
+       System.out.println(facade.getDinnerEventByMember(member1.getEmail()));
+         assertEquals(1, facade.getDinnerEventByMember(member1.getEmail()).size());
    }
 }

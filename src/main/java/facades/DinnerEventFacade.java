@@ -3,6 +3,7 @@ package facades;
 import dtos.DinnerEventDTO;
 import entities.Assignment;
 import entities.DinnerEvent;
+import entities.Member;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -90,5 +91,14 @@ public class DinnerEventFacade {
             entityManager.close();
         }
         return new DinnerEventDTO(dinnerEvent);
+    }
+
+    public List<DinnerEventDTO> getDinnerEventByMember(String email) {
+        EntityManager entityManager = emf.createEntityManager();
+        Member member = entityManager.find(Member.class, email);
+        TypedQuery<DinnerEvent> query = entityManager.createQuery("SELECT d FROM DinnerEvent d JOIN d.assignment a where a.members = :member", DinnerEvent.class);
+        query.setParameter("member", member);
+        List<DinnerEvent> dinnerEvents = query.getResultList();
+        return DinnerEventDTO.getDtos(dinnerEvents);
     }
 }

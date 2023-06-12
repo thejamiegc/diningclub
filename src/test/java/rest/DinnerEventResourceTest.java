@@ -2,10 +2,7 @@ package rest;
 
 import com.google.gson.Gson;
 import dtos.DinnerEventDTO;
-import entities.Assignment;
-import entities.DinnerEvent;
-import entities.Role;
-import entities.User;
+import entities.*;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -33,7 +30,9 @@ public class DinnerEventResourceTest {
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
     private DinnerEvent dinnerEvent1;
+    private DinnerEvent dinnerEvent2;
     private Assignment assignment1;
+    private Member member1;
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
@@ -71,9 +70,13 @@ public class DinnerEventResourceTest {
     public void setUp() {
         EntityManager em = emf.createEntityManager();
         dinnerEvent1 = new DinnerEvent("time1","location","dish1",10);
-        DinnerEvent dinnerEvent2 = new DinnerEvent("time2","location","dish2",20);
+        dinnerEvent2 = new DinnerEvent("time2","location","dish2",20);
         DinnerEvent dinnerEvent3 = new DinnerEvent("time3","location","dish3",30);
         assignment1 = new Assignment("fam","cratedate","email");
+        Assignment assignment2 = new Assignment("fam2","cratedate2","email2");
+        dinnerEvent2.setAssignment(assignment2);
+        member1 = new Member("email","adress",123,5643,876);
+        member1.addAssignment(assignment2);
         Role adminRole = new Role("admin");
         User admin = new User("admin", "test");
         admin.addRole(adminRole);
@@ -83,10 +86,15 @@ public class DinnerEventResourceTest {
             em.createNamedQuery("assignment.deleteAllRows").executeUpdate();
             em.createNamedQuery("roles.deleteAllRows").executeUpdate();
             em.createNamedQuery("users.deleteAllRows").executeUpdate();
+            em.createNamedQuery("member.deleteAllRows").executeUpdate();
+
+            em.persist(assignment2);
+            em.persist(member1);
             em.persist(dinnerEvent1);
             em.persist(dinnerEvent2);
             em.persist(dinnerEvent3);
             em.persist(assignment1);
+
             em.persist(adminRole);
             em.persist(admin);
             em.getTransaction().commit();
@@ -195,5 +203,16 @@ public class DinnerEventResourceTest {
                 .body("dish", equalTo("dish1"))
                 .body("pricePrPerson", equalTo(10))
                 .body("assignment", equalTo(assignment1.getFamilyName()));
+    }
+
+    @Test
+    public void testGetDinnerEventByMember(){
+        given()
+                .contentType("application/json")
+                .get("/dinnerevent/member/" + member1.getEmail()).then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("size()", equalTo(1))
+                .body("[0].time", equalTo(dinnerEvent2.getTime()));
     }
 }
