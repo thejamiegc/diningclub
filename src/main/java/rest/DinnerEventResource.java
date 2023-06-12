@@ -62,4 +62,14 @@ public class DinnerEventResource {
         return GSON.toJson(returnDTO);
     }
 
+    @DELETE
+    @Produces({MediaType.APPLICATION_JSON})
+    @Path("delete/{id}")
+    @RolesAllowed("admin")
+    public void deleteDinnerEvent(@PathParam("id") int id) {
+        System.out.println("id: " + id);
+        FACADE.deleteDinnerEvent(id);
+        return ;
+    }
+
 }

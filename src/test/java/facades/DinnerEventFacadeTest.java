@@ -70,4 +70,13 @@ public class DinnerEventFacadeTest {
        DinnerEventDTO actual = facade.createDinnerEvent(expected);
        assertEquals(expected.getDish(), actual.getDish());
    }
+
+   @Test
+    public void testDeleteDinnerEvent(){
+       System.out.println("deleteDinnerEvent");
+       int beforeDelete = facade.getAllDinnerEventDTOs().size();
+       facade.deleteDinnerEvent(1);
+       int afterDelete = facade.getAllDinnerEventDTOs().size();
+       assertEquals(beforeDelete-1, afterDelete);
+   }
 }

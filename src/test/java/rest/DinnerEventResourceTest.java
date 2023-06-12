@@ -31,7 +31,7 @@ public class DinnerEventResourceTest {
 
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
-
+    private DinnerEvent dinnerEvent1;
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
@@ -68,7 +68,7 @@ public class DinnerEventResourceTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        DinnerEvent dinnerEvent1 = new DinnerEvent("time1","location","dish1",10);
+        dinnerEvent1 = new DinnerEvent("time1","location","dish1",10);
         DinnerEvent dinnerEvent2 = new DinnerEvent("time2","location","dish2",20);
         DinnerEvent dinnerEvent3 = new DinnerEvent("time3","location","dish3",30);
         Role adminRole = new Role("admin");
@@ -140,6 +140,19 @@ public class DinnerEventResourceTest {
                 .body("location", equalTo("location"))
                 .body("dish", equalTo("dish4"))
                 .body("pricePrPerson", equalTo(40));
+
+    }
+
+    @Test
+    public void testDeleteDinnerEvent(){
+        System.out.println("DinnerEvent1 id: " + dinnerEvent1.getId());
+        login("admin", "test");
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .delete("/dinnerevent/delete/" + dinnerEvent1.getId()).then()
+                .assertThat()
+                .statusCode(HttpStatus.NO_CONTENT_204.getStatusCode());
 
     }
 

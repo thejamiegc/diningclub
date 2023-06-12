@@ -49,4 +49,16 @@ public class DinnerEventFacade {
         }
         return new DinnerEventDTO(dinnerEvent);
     }
+
+    public void deleteDinnerEvent(long id) {
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            DinnerEvent dinnerEvent = entityManager.find(DinnerEvent.class, id);
+            entityManager.remove(dinnerEvent);
+            entityManager.getTransaction().commit();
+        } finally {
+            entityManager.close();
+        }
+    }
 }
