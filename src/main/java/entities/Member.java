@@ -6,6 +6,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "member")
+@NamedQuery(name = "member.deleteAllRows", query = "DELETE from Member")
 public class Member {
     @Id
     @Column(name = "email", nullable = false)
@@ -29,12 +30,38 @@ public class Member {
             inverseJoinColumns = @JoinColumn(name = "assignments_family_name"))
     private List<Assignment> assignments = new ArrayList<>();
 
+    @OneToOne(mappedBy = "member", orphanRemoval = true)
+    private User user;
+
+    public Member() {
+    }
+
+    public Member(String email, String address, Integer phone, Integer birthYear, Integer account) {
+        this.email = email;
+        this.address = address;
+        this.phone = phone;
+        this.birthYear = birthYear;
+        this.account = account;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public List<Assignment> getAssignments() {
         return assignments;
     }
 
     public void setAssignments(List<Assignment> assignments) {
         this.assignments = assignments;
+    }
+
+    public void addAssignment(Assignment assignment) {
+        this.assignments.add(assignment);
     }
 
     public Integer getAccount() {
@@ -69,13 +96,24 @@ public class Member {
         this.address = address;
     }
 
-    public String getId() {
+    public String getEmail() {
         return email;
     }
 
-    public void setId(String id) {
+    public void setEmail(String id) {
         this.email = id;
     }
 
-
+    @Override
+    public String toString() {
+        return "Member{" +
+                "email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", phone=" + phone +
+                ", birthYear=" + birthYear +
+                ", account=" + account +
+                ", assignments=" + assignments +
+                ", user=" + user +
+                '}';
+    }
 }

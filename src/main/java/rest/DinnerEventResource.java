@@ -100,13 +100,12 @@ public class DinnerEventResource {
         return GSON.toJson(returnDTO);
     }
 
+
     @PATCH
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
     @Path("assignment/{id}")
-    @RolesAllowed("admin")
     public String addAssignmentToDinnerEvent(@PathParam("id") int id, String jsonString){
-        String thisuser = securityContext.getUserPrincipal().getName();
         String assignment = "";
         DinnerEventDTO dinnerEventDTO = null;
         try {

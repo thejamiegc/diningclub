@@ -76,4 +76,15 @@ public class Assignment {
     public void setFamilyName(String familyName) {
         this.familyName = familyName;
     }
+
+    @Override
+    public String toString() {
+        return "Assignment{" +
+                "familyName='" + familyName + '\'' +
+                ", createDate='" + createDate + '\'' +
+                ", contactInfo='" + contactInfo + '\'' +
+                ", dinnerEvents=" + dinnerEvents +
+                ", members=" + members +
+                '}';
+    }
 }

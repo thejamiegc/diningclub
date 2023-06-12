@@ -33,7 +33,19 @@ public class User implements Serializable {
   @ManyToMany
   private List<Role> roleList = new ArrayList<>();
 
-    // Method that returns roles as strings.
+  @OneToOne(orphanRemoval = true)
+  @JoinColumn(name = "member_email")
+  private Member member;
+
+  public Member getMember() {
+    return member;
+  }
+
+  public void setMember(Member member) {
+    this.member = member;
+  }
+
+  // Method that returns roles as strings.
   public List<String> getRolesAsStrings() {
     if (roleList.isEmpty()) {
       return null;

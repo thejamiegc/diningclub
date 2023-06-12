@@ -33,6 +33,7 @@ public class ApplicationConfig extends Application {
         resources.add(security.errorhandling.NotAuthorizedExceptionMapper.class);
         resources.add(JokeResource.class);
         resources.add(DinnerEventResource.class);
+        resources.add(MemberResource.class);
     }
     
 }

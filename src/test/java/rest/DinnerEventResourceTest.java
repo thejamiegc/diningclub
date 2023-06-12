@@ -184,11 +184,9 @@ public class DinnerEventResourceTest {
     public void testAddAssignmentToDinnerEvent(){
         Gson gson = new Gson().newBuilder().setPrettyPrinting().create();
         String json = gson.toJson(assignment1.getFamilyName());
-        login("admin", "test");
         given()
                 .contentType("application/json")
                 .body(json)
-                .header("x-access-token", securityToken)
                 .patch("/dinnerevent/assignment/" + dinnerEvent1.getId()).then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
