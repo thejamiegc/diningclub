@@ -46,6 +46,8 @@ public class DinnerEventFacadeTest {
         try {
             em.getTransaction().begin();
             em.createNamedQuery("dinner_event.deleteAllRows").executeUpdate();
+            em.createNamedQuery("assignment.deleteAllRows").executeUpdate();
+
             em.persist(dinnerEvent1);
             em.persist(dinnerEvent2);
             em.persist(dinnerEvent3);

@@ -80,6 +80,7 @@ public class DinnerEventResourceTest {
         try {
             em.getTransaction().begin();
             em.createNamedQuery("dinner_event.deleteAllRows").executeUpdate();
+            em.createNamedQuery("assignment.deleteAllRows").executeUpdate();
             em.createNamedQuery("roles.deleteAllRows").executeUpdate();
             em.createNamedQuery("users.deleteAllRows").executeUpdate();
             em.persist(dinnerEvent1);
