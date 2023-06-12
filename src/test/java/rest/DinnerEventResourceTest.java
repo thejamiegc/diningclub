@@ -1,6 +1,10 @@
 package rest;
 
+import com.google.gson.Gson;
+import dtos.DinnerEventDTO;
 import entities.DinnerEvent;
+import entities.Role;
+import entities.User;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -67,18 +71,42 @@ public class DinnerEventResourceTest {
         DinnerEvent dinnerEvent1 = new DinnerEvent("time1","location","dish1",10);
         DinnerEvent dinnerEvent2 = new DinnerEvent("time2","location","dish2",20);
         DinnerEvent dinnerEvent3 = new DinnerEvent("time3","location","dish3",30);
+        Role adminRole = new Role("admin");
+        User admin = new User("admin", "test");
+        admin.addRole(adminRole);
         try {
             em.getTransaction().begin();
             em.createNamedQuery("dinner_event.deleteAllRows").executeUpdate();
+            em.createNamedQuery("roles.deleteAllRows").executeUpdate();
+            em.createNamedQuery("users.deleteAllRows").executeUpdate();
             em.persist(dinnerEvent1);
             em.persist(dinnerEvent2);
             em.persist(dinnerEvent3);
+            em.persist(adminRole);
+            em.persist(admin);
             em.getTransaction().commit();
         } finally {
             em.close();
         }
     }
 
+    private static String securityToken;
+
+    private static void login(String role, String password) {
+        String json = String.format("{username: \"%s\", password: \"%s\"}", role, password);
+        securityToken = given()
+                .contentType("application/json")
+                .body(json)
+                //.when().post("/api/login")
+                .when().post("/login")
+                .then()
+                .extract().path("token");
+        //System.out.println("TOKEN ---> " + securityToken);
+    }
+
+    private void logOut() {
+        securityToken = null;
+    }
     @Test
     public void testServerIsUp() {
         given().when().get("/dinnerevent").then().statusCode(200);
@@ -95,5 +123,24 @@ public class DinnerEventResourceTest {
                 .body("size()", equalTo(3));
     }
 
+    @Test
+    public void testCreateNewDinnerEvent() throws Exception{
+        Gson gson = new Gson().newBuilder().setPrettyPrinting().create();
+        DinnerEventDTO dinnerEventDTO = new DinnerEventDTO("time4","location","dish4",40);
+        String json = gson.toJson(dinnerEventDTO);
+        login("admin", "test");
+        given()
+                .contentType("application/json")
+                .body(json)
+                .header("x-access-token", securityToken)
+                .post("/dinnerevent/create").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("time", equalTo("time4"))
+                .body("location", equalTo("location"))
+                .body("dish", equalTo("dish4"))
+                .body("pricePrPerson", equalTo(40));
+
+    }
 
 }

@@ -1,5 +1,6 @@
 package facades;
 
+import dtos.DinnerEventDTO;
 import entities.DinnerEvent;
 import org.junit.jupiter.api.*;
 import utils.EMF_Creator;
@@ -60,6 +61,13 @@ public class DinnerEventFacadeTest {
        System.out.println("getAllDinnerEventDTOs");
         assertEquals(3, facade.getAllDinnerEventDTOs().size());
    }
-    
 
+   @Test
+    public void testCreateDinnerEvent() {
+       System.out.println("createDinnerEvent");
+       DinnerEvent dinnerEvent = new DinnerEvent("time4", "location", "dish4", 40);
+       DinnerEventDTO expected = new DinnerEventDTO(dinnerEvent);
+       DinnerEventDTO actual = facade.createDinnerEvent(expected);
+       assertEquals(expected.getDish(), actual.getDish());
+   }
 }
