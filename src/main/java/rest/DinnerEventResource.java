@@ -3,6 +3,7 @@ package rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import dtos.DinnerEventDTO;
 import facades.DinnerEventFacade;
 import utils.EMF_Creator;
@@ -97,6 +98,25 @@ public class DinnerEventResource {
         dinnerEventDTO.setId((long) id);
         DinnerEventDTO returnDTO = FACADE.updateDinnerEvent(dinnerEventDTO);
         return GSON.toJson(returnDTO);
+    }
+
+    @PATCH
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Path("assignment/{id}")
+    @RolesAllowed("admin")
+    public String addAssignmentToDinnerEvent(@PathParam("id") int id, String jsonString){
+        String thisuser = securityContext.getUserPrincipal().getName();
+        String assignment = "";
+        DinnerEventDTO dinnerEventDTO = null;
+        try {
+            JsonPrimitive json = new Gson().fromJson(jsonString, JsonPrimitive.class);
+            assignment = json.getAsString();
+            dinnerEventDTO = FACADE.addAssignmentToDinnerEvent(id, assignment);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return GSON.toJson(dinnerEventDTO);
     }
 
 }

@@ -2,6 +2,7 @@ package rest;
 
 import com.google.gson.Gson;
 import dtos.DinnerEventDTO;
+import entities.Assignment;
 import entities.DinnerEvent;
 import entities.Role;
 import entities.User;
@@ -32,6 +33,7 @@ public class DinnerEventResourceTest {
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
     private DinnerEvent dinnerEvent1;
+    private Assignment assignment1;
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
@@ -71,6 +73,7 @@ public class DinnerEventResourceTest {
         dinnerEvent1 = new DinnerEvent("time1","location","dish1",10);
         DinnerEvent dinnerEvent2 = new DinnerEvent("time2","location","dish2",20);
         DinnerEvent dinnerEvent3 = new DinnerEvent("time3","location","dish3",30);
+        assignment1 = new Assignment("fam","cratedate","email");
         Role adminRole = new Role("admin");
         User admin = new User("admin", "test");
         admin.addRole(adminRole);
@@ -82,6 +85,7 @@ public class DinnerEventResourceTest {
             em.persist(dinnerEvent1);
             em.persist(dinnerEvent2);
             em.persist(dinnerEvent3);
+            em.persist(assignment1);
             em.persist(adminRole);
             em.persist(admin);
             em.getTransaction().commit();
@@ -175,4 +179,22 @@ public class DinnerEventResourceTest {
                 .body("pricePrPerson", equalTo(40));
     }
 
+    @Test
+    public void testAddAssignmentToDinnerEvent(){
+        Gson gson = new Gson().newBuilder().setPrettyPrinting().create();
+        String json = gson.toJson(assignment1.getFamilyName());
+        login("admin", "test");
+        given()
+                .contentType("application/json")
+                .body(json)
+                .header("x-access-token", securityToken)
+                .patch("/dinnerevent/assignment/" + dinnerEvent1.getId()).then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("time", equalTo("time1"))
+                .body("location", equalTo("location"))
+                .body("dish", equalTo("dish1"))
+                .body("pricePrPerson", equalTo(10))
+                .body("assignment", equalTo(assignment1.getFamilyName()));
+    }
 }

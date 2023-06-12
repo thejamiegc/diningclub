@@ -1,6 +1,7 @@
 package facades;
 
 import dtos.DinnerEventDTO;
+import entities.Assignment;
 import entities.DinnerEvent;
 import org.junit.jupiter.api.*;
 import utils.EMF_Creator;
@@ -17,6 +18,7 @@ public class DinnerEventFacadeTest {
     private static EntityManagerFactory emf;
     private static DinnerEventFacade facade;
     private DinnerEvent dinnerEvent1;
+    private Assignment assignment1;
 
     public DinnerEventFacadeTest() {
     }
@@ -40,12 +42,14 @@ public class DinnerEventFacadeTest {
         dinnerEvent1 = new DinnerEvent("time1","location","dish1",10);
         DinnerEvent dinnerEvent2 = new DinnerEvent("time2","location","dish2",20);
         DinnerEvent dinnerEvent3 = new DinnerEvent("time3","location","dish3",30);
+        assignment1 = new Assignment("assignment1", "description1", "test1");
         try {
             em.getTransaction().begin();
             em.createNamedQuery("dinner_event.deleteAllRows").executeUpdate();
             em.persist(dinnerEvent1);
             em.persist(dinnerEvent2);
             em.persist(dinnerEvent3);
+            em.persist(assignment1);
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -88,5 +92,13 @@ public class DinnerEventFacadeTest {
          expected.setDish("newDish");
          DinnerEventDTO actual = facade.updateDinnerEvent(expected);
          assertEquals(expected.getDish(), actual.getDish());
+   }
+
+   @Test
+    public void testAddAssignmentToDinnerEvent(){
+         System.out.println("addAssignmentToDinnerEvent");
+         DinnerEventDTO expected = new DinnerEventDTO(dinnerEvent1);
+         DinnerEventDTO actual = facade.addAssignmentToDinnerEvent(expected.getId(), assignment1.getFamilyName());
+         assertEquals(assignment1.getFamilyName(), actual.getAssignment());
    }
 }

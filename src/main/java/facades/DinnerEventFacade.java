@@ -1,6 +1,7 @@
 package facades;
 
 import dtos.DinnerEventDTO;
+import entities.Assignment;
 import entities.DinnerEvent;
 
 import javax.persistence.EntityManager;
@@ -66,6 +67,21 @@ public class DinnerEventFacade {
         EntityManager entityManager = emf.createEntityManager();
         DinnerEvent dinnerEvent = new DinnerEvent(dinnerEventDTO.getTime(), dinnerEventDTO.getLocation(), dinnerEventDTO.getDish(),dinnerEventDTO.getPricePrPerson());
         dinnerEvent.setId(dinnerEventDTO.getId());
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.merge(dinnerEvent);
+            entityManager.getTransaction().commit();
+        } finally {
+            entityManager.close();
+        }
+        return new DinnerEventDTO(dinnerEvent);
+    }
+
+    public DinnerEventDTO addAssignmentToDinnerEvent(long id, String familyName) {
+        EntityManager entityManager = emf.createEntityManager();
+        DinnerEvent dinnerEvent = entityManager.find(DinnerEvent.class, id);
+        Assignment assignment = entityManager.find(Assignment.class, familyName);
+        dinnerEvent.setAssignment(assignment);
         try {
             entityManager.getTransaction().begin();
             entityManager.merge(dinnerEvent);
