@@ -16,6 +16,7 @@ public class DinnerEventFacadeTest {
 
     private static EntityManagerFactory emf;
     private static DinnerEventFacade facade;
+    private DinnerEvent dinnerEvent1;
 
     public DinnerEventFacadeTest() {
     }
@@ -36,7 +37,7 @@ public class DinnerEventFacadeTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        DinnerEvent dinnerEvent1 = new DinnerEvent("time1","location","dish1",10);
+        dinnerEvent1 = new DinnerEvent("time1","location","dish1",10);
         DinnerEvent dinnerEvent2 = new DinnerEvent("time2","location","dish2",20);
         DinnerEvent dinnerEvent3 = new DinnerEvent("time3","location","dish3",30);
         try {
@@ -75,7 +76,7 @@ public class DinnerEventFacadeTest {
     public void testDeleteDinnerEvent(){
        System.out.println("deleteDinnerEvent");
        int beforeDelete = facade.getAllDinnerEventDTOs().size();
-       facade.deleteDinnerEvent(1);
+       facade.deleteDinnerEvent(dinnerEvent1.getId());
        int afterDelete = facade.getAllDinnerEventDTOs().size();
        assertEquals(beforeDelete-1, afterDelete);
    }
