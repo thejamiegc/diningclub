@@ -97,14 +97,14 @@ public class MemberResourceTest {
     @Test
     public void testAddAssignmentToMember(){
         Gson gson = new Gson().newBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(assignment1.getFamilyName());
+        String json = gson.toJson(assignment1);
 
         given()
                 .contentType("application/json")
                 .accept("application/json")
                 .body(json)
                 .when()
-                .patch("/member/assignment/"+member1.getEmail())
+                .post("/member/assignment/"+member1.getEmail())
                 .then()
                 .statusCode(200)
                 .body("assignments[0]", equalTo("fam"));

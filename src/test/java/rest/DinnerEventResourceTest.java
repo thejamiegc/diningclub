@@ -183,11 +183,11 @@ public class DinnerEventResourceTest {
     @Test
     public void testAddAssignmentToDinnerEvent(){
         Gson gson = new Gson().newBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(assignment1.getFamilyName());
+        String json = gson.toJson(assignment1);
         given()
                 .contentType("application/json")
                 .body(json)
-                .patch("/dinnerevent/assignment/" + dinnerEvent1.getId()).then()
+                .post("/dinnerevent/assignment/" + dinnerEvent1.getId()).then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("time", equalTo("time1"))

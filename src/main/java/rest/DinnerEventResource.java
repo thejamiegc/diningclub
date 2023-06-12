@@ -101,7 +101,7 @@ public class DinnerEventResource {
     }
 
 
-    @PATCH
+    @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
     @Path("assignment/{id}")
@@ -109,8 +109,8 @@ public class DinnerEventResource {
         String assignment = "";
         DinnerEventDTO dinnerEventDTO = null;
         try {
-            JsonPrimitive json = new Gson().fromJson(jsonString, JsonPrimitive.class);
-            assignment = json.getAsString();
+            JsonObject json = new Gson().fromJson(jsonString, JsonObject.class);
+            assignment = json.get("familyName").getAsString();
             dinnerEventDTO = FACADE.addAssignmentToDinnerEvent(id, assignment);
         }catch (Exception e){
             e.printStackTrace();
