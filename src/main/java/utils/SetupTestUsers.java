@@ -19,7 +19,7 @@ public class SetupTestUsers {
     // Also, either delete this file, when users are created or rename and add to .gitignore
     // TODO Whatever you do DO NOT COMMIT and PUSH with the real passwords
 
-    User user = new User("user", "pw#1");
+    User user = new User("Jamie", "password");
     User admin = new User("admin", "pw#ad");
     Assignment assignment1 = new Assignment("Callan", "2020-12-24", "CallanEmail");
     Assignment assignment2 = new Assignment("Madsen", "2020-12-24", "MadsEmail");
@@ -39,17 +39,17 @@ public class SetupTestUsers {
     Role userRole = new Role("user");
     Role adminRole = new Role("admin");
     user.addRole(userRole);
-    admin.addRole(adminRole);
-    em.persist(userRole);
-    em.persist(adminRole);
+//    admin.addRole(adminRole);
+//    em.persist(userRole);
+//    em.persist(adminRole);
     em.persist(user);
-    em.persist(admin);
-    em.persist(assignment1);
-    em.persist(assignment2);
-    em.persist(dinnerEvent);
-    em.persist(dinnerEvent2);
-    em.persist(member);
-    em.persist(member2);
+//    em.persist(admin);
+//    em.persist(assignment1);
+//    em.persist(assignment2);
+//    em.persist(dinnerEvent);
+//    em.persist(dinnerEvent2);
+//    em.persist(member);
+//    em.persist(member2);
 
     em.getTransaction().commit();
     System.out.println("PW: " + user.getUserPass());
